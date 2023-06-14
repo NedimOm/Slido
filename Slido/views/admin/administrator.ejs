@@ -1,0 +1,95 @@
+<%- include('../layouts/head')%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+    function obrisi(id) {
+        $.ajax({
+            url: '/administrator/obrisi',
+            data: { id: id, obrisan: true },
+            type: 'PUT',
+            beforeSend: function() {
+
+            }
+        }).done(function (data) {
+            $("#tabela").find(`tr#korisnik${id}`).remove();
+
+        });
+    }
+    function banuj(id, dani) {
+        id=parseInt(id);
+        $.ajax({
+            url: '/administrator/banuj',
+            data: { id: id, dani: dani },
+            type: 'PUT',
+            beforeSend: function() {
+
+            }
+        }).done(function (data) {
+            $("#tabela").find(`tr#korisnik${id}`).remove();
+
+        });
+    }
+</script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark bg-primary fixed-top navi">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand slido" href="#">
+            <img src="../images/favicon.ico" alt="Moja slika" style="width:40px;" class="rounded-circle">
+        </a>
+        <div class="collapse navbar-collapse centriranje" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="/" class="nav-link dijelovi">Početna</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/administrator/predavanja" class="nav-link active dijelovi">Sva predavanja</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/administrator/pitanja" class="nav-link dijelovi">Sva pitanja</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/administrator/zabranjenerijeci" class="nav-link dijelovi">Zabranjene rijeci</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <form action="logout" method="POST">
+                <button type="submit" class="btn btn-outline-secondary text-light">Sign out</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <table class="table table-responsive" id="tabela">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Ime</th>
+            <th scope="col">Prezime</th>
+            <th scope="col">Email</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <%for(let i=0;i<predavaci.length;i++){%>
+        <tr id="korisnik<%=predavaci[i].id%>">
+            <th scope="row"><%=predavaci[i].id%></th>
+            <td><%=predavaci[i].ime%></td>
+            <td><%=predavaci[i].prezime%></td>
+            <td><%=predavaci[i].email%></td>
+            <td>
+                <button class="btn btn-danger" type="submit" onclick="obrisi(<%= predavaci[i].id %>)">Brisi</button>
+                <button class="btn btn-danger" type="submit" onclick="banuj('<%= predavaci[i].id %>' , 15)">Ban 15</button>
+                <button class="btn btn-danger" type="submit" onclick="banuj('<%= predavaci[i].id %>' , 30)">Ban 30</button>
+            </td>
+        </tr>
+        <%}%>
+        </tbody>
+    </table>
+</body>
+</html>

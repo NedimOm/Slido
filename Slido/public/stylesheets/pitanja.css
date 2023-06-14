@@ -1,0 +1,11 @@
+.pitanje{
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 5px;
+    background-color: lightyellow;
+}
+
+ul {
+    list-style-type: none;
+    word-break: break-word;
+}

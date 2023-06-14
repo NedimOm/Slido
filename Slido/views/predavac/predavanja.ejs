@@ -1,0 +1,41 @@
+<%- include('../layouts/head')%>
+<link rel='stylesheet' href='../stylesheets/predavanja.css'/>
+</head>
+<body>
+<%- include('../layouts/nav')%>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Pozadina</th>
+                    <th scope="col">Naziv</th>
+                    <th scope="col">Kod</th>
+                    <th>Ukupno pitanja</th>
+                    <th>Ukupno odgovorenih pitanja</th>
+                    <th scope="col">Od</th>
+                    <th scope="col">Do</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <%for(let i=0;i<predavanja.length;i++){%>
+                <tr>
+                    <td><a href="/predavac/pitanja/<%=predavanja[i].kod%>"><img class="rounded-circle" src="/<%=predavanja[i].putanja%>" style="width:70px;" alt="Predavanje nema cover" onerror="this.style.display='none'"></a></td>
+                    <td><a href="/predavac/pitanja/<%=predavanja[i].kod%>" style="color:darkcyan; font-size:17px;"><%=predavanja[i].naziv%></a></td>
+                    <td><a href="/predavac/pitanja/<%=predavanja[i].kod%>"><%=predavanja[i].kod%></a></td>
+                    <td><a href="/predavac/pitanja/<%=predavanja[i].kod%>"><%=predavanja[i].brojp || 0%></a></td>
+                    <td><a href="/predavac/pitanja/<%=predavanja[i].kod%>"><%=predavanja[i].brojo || 0%></a></td>
+                    <td><a href="/predavac/pitanja/<%=predavanja[i].kod%>"><%=predavanja[i].datum.toDateString()%></a></td>
+                    <td><a href="/predavac/pitanja/<%=predavanja[i].kod%>"><%=`${predavanja[i].datumdo.toDateString()}`%></a></td>
+                </tr>
+                <%}%>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

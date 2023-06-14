@@ -1,0 +1,227 @@
+<%- include('../layouts/head')%>
+    <link rel='stylesheet' href='../../stylesheets/pitanja.css'/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+         var socket = io.connect('ws://localhost:3000');
+         //var socket = io.connect('http://192.168.1.143:3000');
+        socket.emit('kreiraj', 'predavac<%=kod%>');
+        socket.emit('load', '<%=kod%>');
+    </script>
+    <script>
+        function izvjestaj(kod) {
+            $.ajax({
+                url: '/predavac/izvjestaj',
+                data: { kod: kod},
+                type: 'PUT',
+                beforeSend: function() {
+
+                }
+            }).done(function (data) {
+                document.getElementById("potvrda").innerHTML = "Izvjestaj je poslan na email.";
+                setTimeout(()=>{
+                    document.getElementById("potvrda").innerHTML = "";
+                }, 4000);
+            });
+        }
+
+        function sortiraj(kljuc) {
+            $.ajax({
+                url: '/predavac/sortiraj',
+                data: { kljuc : kljuc, kod: "<%=kod%>"},
+                type: 'PUT',
+                beforeSend: function() {
+
+                }
+            }).done(function (data) {
+                for(let i=0;i<data.pitanja.length;i++) {
+                    $(`#pitanje${data.pitanja[i].id}`).remove();
+                }
+                for(let i=0;i<data.pitanja.length;i++) {
+                    $('#pitanja')
+                        .prepend($('<div class="alert alert-info bojapitanja" role="alert" ><li class="list-group-item"></li></div>').attr("id",`pitanje${data.pitanja[i].id}`).text(data.pitanja[i].tekst)
+                            .append($('<button <i style="font-size:20px;color:white" class="fa fa-solid fa-heart"></i>/>').addClass('lajk').text(''))
+                            .append($('<span id="ajdi" style="float: right; margin-right: 5px;"></span>').attr("id",`broj${data.pitanja[i].id}`).text(data.pitanja[i].broj_lajkova)));
+                     // document.getElementById("ajdi").setAttribute("id",`broj${data.pitanja[i].id}`);
+                     // document.getElementById("pitanje").setAttribute("id",`pitanje${data.pitanja[i].id}`);
+
+                }
+                for(let i=0;i<data.pitanja.length;i++){
+                    $(`#pitanje${data.pitanja[i].id}`).prepend($('<div style="float: left;"> <button class="batoni" id="b1"><i style="color: darkred; font-size: 20px;" class="fa fa-times"></i></button> <button class="batoni" id="b2"><i style="font-size: 20px;" class="fa fa-eye"></i></button> <button class="batoni" id="b3"><i style="color: green; font-size: 20px;" class="fa fa-check"></i></button></div>'));
+                    $('#b1').attr('onclick', `obrisiPitanje(${data.pitanja[i].id})`);
+                    $('#b2').attr('onclick', `sakrijPitanje(${data.pitanja[i].id})`);
+                    $('#b3').attr('onclick', `odgovoriPitanje(${data.pitanja[i].id})`);
+
+                    $('#b1').attr('id', `obrisiPitanje(${data.pitanja[i].id})`);
+                    $('#b2').attr('id', `sakrijPitanje(${data.pitanja[i].id})`);
+                    $('#b3').attr('id', `odgovoriPitanje(${data.pitanja[i].id})`);
+
+                }
+
+            });
+        }
+
+        function obrisiPitanje(id) {
+            socket.emit('ukloni_pitanje', id);
+            $.ajax({
+                url: '/predavac/obrisiPitanje',
+                data: { id: id},
+                type: 'PUT',
+                beforeSend: function() {
+
+                }
+            }).done(function (data) {
+                $(`#pitanje${id}`).remove();
+
+            });
+        }
+
+        function sakrijPitanje(id) {
+            socket.emit('ukloni_pitanje', id);
+            $.ajax({
+                url: '/predavac/sakrijPitanje',
+                data: { id: id },
+                type: 'PUT',
+                beforeSend: function() {
+
+                }
+            }).done(function (data) {
+                $(`#pitanje${id}`).remove();
+            });
+        }
+
+        function odgovoriPitanje(id) {
+            socket.emit('ukloni_pitanje', id);
+            $.ajax({
+                url: '/predavac/odgovoriPitanje',
+                data: { id: id},
+                type: 'PUT',
+                beforeSend: function() {
+
+                }
+            }).done(function (data) {
+                $(`#pitanje${id}`).remove();
+
+            });
+        }
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark bg-primary fixed-top navi">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand slido" href="#">
+            <img src="../../images/favicon.ico" alt="Moja slika" style="width:40px;" class="rounded-circle">
+        </a>
+        <div class="collapse navbar-collapse centriranje " id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="/predavac" class="nav-link dijelovi">Početna</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/predavac/predavanja" class="nav-link dijelovi">Moja predavanja</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle dijelovi" href="#" role="button" data-bs-toggle="dropdown">Odabir pitanja</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Pitanja</a></li>
+                        <li><a class="dropdown-item" href="/predavac/sakrivenaPitanja/<%=kod%>">Sakrivena pitanja</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <div>
+                        <button id="btn<%=kod%>" class="btn btn-outline-success text-light" onclick="izvjestaj(<%=kod%>)">Izvještaj</button>
+                    </div>
+                </li>
+                <li class="nav-item" style="padding-left: 5px">
+                    <button type="button" class="btn btn-outline-success text-light" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Dodatne opcije
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <form class="d-flex" action="/logout" method="POST">
+                <button type="submit" class="btn btn-outline-secondary text-light" >Sign out</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Kod predavanja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h1>Kod za pristup predavanju:</h1>
+                <h1 style="font-size: 100px;">#<%=kod%></h1>
+                <img src =
+                     "https://chart.googleapis.com/chart?cht=qr&chl='http://<%=ipadresa%>:3000/pitanja/<%=kod%>'&chs=160x160&chld=L|0"
+                     class = "img-thumbnail img-responsive" style="width: 200px; height: 200px;"/>
+                <div class="centriranje mt-3">
+                    <form action="/predavac/posaljipublici" method="post">
+                        <label for="emailovi" style="font-size: 18px; color:#415a77;">Posaljite pristupni link publici na email: </label>
+                        <input style="width: 100%;" id="emailovi" type="text" class="form-control" name="emailovi" placeholder="Unesite emailove publike..">
+                        <input type="hidden" value="<%=kod%>" name="kodPredavanja">
+                        <button type="submit" class="btn btn-primary">Posalji email</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Zavrsi prikaz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row centriranje">
+        <div class="col-3 fixed-top" style="margin-top: 70px; background-color: #ade8f4; margin-left: 5px; border-radius: 3px;">
+            <h4 style="font-size: 1.5vw; color:#415a77;">Sortiraj pitanja:</h4>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <p onclick="sortiraj('vrijeme')" style="font-size: 1.4vw; cursor:pointer;" class="sortt">- Vremenski</p>
+                </li>
+                <li class="nav-item">
+                    <p onclick="sortiraj('lajkovi')" style="font-size: 1.4vw; cursor:pointer;" class="sortt">- Po lajkovima</p>
+                </li>
+                <li class="nav-item">
+                    <img class="img-fluid" src="/<%=putanja%>" alt="Predavanje nema cover" onerror="this.style.display='none'" width="150px" height="90px">
+                </li>
+                <li class="nav-item">
+                    <p style="font-size: 1.4vw; margin-top:5px;" id="trenutnibroj"></p>
+                </li>
+            </ul>
+        </div>
+        <div class="mt-1">
+            <p style="color: green;" id="potvrda"> </p>
+        </div>
+
+        <div class="col-6">
+            <ul id="pitanja" class="list-group">
+                <%
+                for(let i=pitanja.length-1;i>=0;i--){%>
+                <div class="alert alert-info bojapitanja" role="alert"  id="pitanje<%=pitanja[i].id%>">
+                    <div style="float: left;" >
+                        <button class="batoni" onclick="obrisiPitanje(<%=pitanja[i].id%>)"><i style="color: darkred; font-size: 20px;" class="fa fa-times"></i></button>
+                        <button class="batoni" onclick="sakrijPitanje(<%=pitanja[i].id%>)"><i style="font-size: 20px;" class="fa fa-eye"></i></button>
+                        <button class="batoni" onclick="odgovoriPitanje(<%=pitanja[i].id%>)"><i style="color: green; font-size: 20px;" class="fa fa-check"></i></button>
+                    </div>
+                    <span><%=pitanja[i].tekst%></span>
+                    <button class="lajk"> <i style="font-size:20px;color:white" class="fa fa-solid fa-heart"></i></button>
+                    <span id="broj<%=pitanja[i].id%>" style="float: right; margin-right: 5px;"><%=pitanja[i].broj_lajkova%></span>
+                </div>
+                <%}%>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="/javascripts/soketskripta.js"></script>
+</body>
+</html>

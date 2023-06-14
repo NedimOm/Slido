@@ -1,0 +1,81 @@
+<%- include('../layouts/head')%>
+</head>
+
+<body>
+<div class="container">
+    <div class="centriranje">
+        <a href="/" class="slido pb-3"><h1>Slido</h1></a>
+    </div>
+    <div class="row centriranje">
+        <div class="col-6">
+            <div class="centriranje">
+                <h5 style="color: #415a77">Ukoliko ste predavač, molimo prijavite se:</h5>
+            </div>
+            <div class="centriranje">
+                <% if(messages.error) {%>
+                <h6 style="color:rgb(229,0,0);"><%=messages.error%></h6>
+                <%}%>
+            </div>
+            <form action="loginUser" method="POST">
+                <div class="centriranje">
+                    <input class="form-control" style="width:50%;" type="text" name="username" placeholder="Email.." required autofocus>
+                </div>
+                <div class="centriranje">
+                    <input class="form-control mt-1" style="width:50%;" type="password" name="password" placeholder="Password.." required>
+                </div>
+                <div class="pt-2 centriranje">
+                    <button class="btn btn-outline-primary" type="submit">Log in</button>
+                </div>
+                <div class="mt-3 centriranje">
+                    <a href="registracija"><button type="button" class="btn btn-outline-dark">Registruj se besplatno!</button></a>
+                </div>
+            </form>
+            <form action="pitanja" method="POST">
+                <div class="mt-3">
+                    <div>
+                        <h5 style="color: #415a77">Ukoliko ste dio publike, molimo unesite kod predavanja: </h5>
+                    </div>
+                    <% if(messages.err) {%>
+                    <h6 style="color:rgb(229,0,0);"><%=messages.err%></h6>
+                    <%}%>
+                    <div class="centriranje pt-2">
+                        <input class="form-control" style="width: 70%;" type="text" name="kod" placeholder="Unesite kod.." required>
+                    </div>
+                    <div class="centriranje mt-1">
+                        <button class="btn btn-outline-primary" type="submit">Potvrdi</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="pt-3">
+    <a href="administrator/login">Log in kao administrator</a>
+</div>
+
+</body>
+<footer>
+    <div class="footer fixed-bottom">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container justify-content-center">
+                <ul class="nav navbar-nav" style="float: left;">
+                    <li class="nav-item">
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.facebook.com/nomeragich" target="_blank"> <i class="bi bi-facebook"></i> Facebook</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.instagram.com/nedim_omeragic" target="_blank"> <i class="bi bi-instagram"></i> Instagram</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://ba.linkedin.com/in/nedim-omeragi%C4%87-89a095209" target="_blank"><i class="bi bi-linkedin"></i> LinkedIn</a>
+                    </li>
+                </ul>
+                <span class="navbar-text" style="padding-left:5px; float:right;">2023 &#169</span>
+            </div>
+        </nav>
+    </div>
+</footer>
+</html>

@@ -1,0 +1,84 @@
+<%- include('../layouts/head')%>
+<link rel='stylesheet' href='../stylesheets/registracija.css'/>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="centriranje">
+            <a href="/" class="slido pb-3"><h1>Slido</h1></a>
+        </div>
+        <div class="row">
+            <div class="col-7">
+                <div class="centriranje">
+                    <h2>Registruj se kao predavač!</h2>
+                </div>
+                <div class="centriranje mt-3">
+                    <form action="registracija" method="POST">
+                        <h5 style="color: #415a77">Molimo unesite svoje podatke:</h5>
+                        <div class="pt-1 mb-2 centriranje">
+                            <label><input type="text" class="form-control" name="ime" placeholder="Unesite ime.." required autofocus></label>
+                        </div>
+                        <div class="mb-2 centriranje">
+                            <label><input type="text" class="form-control"  name="prezime" placeholder="Unesite prezime.." required></label>
+                        </div>
+                        <% if(messages.err) {%>
+                        <h6 style="color:rgb(229,0,0);"><%=messages.err%></h6>
+                        <%}%>
+                        <div class="mb-2 centriranje">
+                            <label><input type="email" class="form-control"  name="email" placeholder="Unesite email.." required></label>
+                        </div>
+                        <div class="mb-2 centriranje">
+                            <label><input type="password" class="form-control"  name="sifra" placeholder="Unesite password.." required></label>
+                        </div>
+                        <div class="centriranje">
+                            <button class="btn btn-outline-primary btn-block" type="submit">Potvrdi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-4 mt-3">
+                <h4 style="color: #415a77">
+                    Ukoliko niste predavač nije vam potrebna registracija.
+                    <h5 style="color: #415a77">Samo unesite kod predavanja!</h5>
+                </h4>
+                <form action="pitanja" method="POST">
+                    <div class="pt-3 centriranje">
+                        <% if(messages.err) {%>
+                        <h6 style="color:rgb(229,0,0);"><%=messages.err%></h6>
+                        <%}%>
+                        <label>
+                            <input type="text" class="form-control" name="kod" placeholder="Unesite kod.." required>
+                        </label>
+                    </div>
+                    <div class="pt-2 centriranje">
+                        <button class="btn btn-outline-primary btn-block" type="submit">Potvrdi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<footer>
+    <div class="footer fixed-bottom">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container justify-content-center">
+                <ul class="nav navbar-nav" style="float: left;">
+                    <li class="nav-item">
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.facebook.com/nomeragich" target="_blank"> <i class="bi bi-facebook"></i> Facebook</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.instagram.com/nedim_omeragic" target="_blank"> <i class="bi bi-instagram"></i> Instagram</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://ba.linkedin.com/in/nedim-omeragi%C4%87-89a095209" target="_blank"><i class="bi bi-linkedin"></i> LinkedIn</a>
+                    </li>
+                </ul>
+                <span class="navbar-text" style="padding-left:5px; float:right;">2023 &#169</span>
+            </div>
+        </nav>
+    </div>
+</footer>
+</html>

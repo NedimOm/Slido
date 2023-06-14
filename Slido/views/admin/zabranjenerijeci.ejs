@@ -1,0 +1,112 @@
+<%- include('../layouts/head')%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+    function obrisi(id) {
+        $.ajax({
+            url: '/administrator/obrisirijec',
+            data: { idrijeci: id, obrisana: true },
+            type: 'PUT',
+            beforeSend: function() {
+
+            }
+        }).done(function (data) {
+            $("#tabela").find(`tr#rijec${id}`).remove();
+
+        });
+    }
+
+    function dodaj() {
+        let tekst = document.getElementById('rijec').value;
+        $.ajax({
+            url: '/administrator/dodajrijec',
+            data: { obrisana: false, rijec: tekst },
+            type: 'PUT',
+            error: function (error) {
+                console.info(error)
+            },
+            beforeSend: function() {
+
+            }
+        }).done(function (data) {
+            console.log("jel se pozvalo ovo");
+            $("#tabela").find('tbody').prepend("<tr id='novitr'><td>" + tekst + "</td><td><button type='button' class='btn btn-danger' id='novibtn'>" + "Brisi" + "</button></td></tr>");
+
+            document.getElementById("novibtn").setAttribute("onclick", `obrisi(${data.ajdirijeci})` );
+            document.getElementById("novibtn").setAttribute("id", "staribtn" );
+            document.getElementById("novitr").setAttribute("id", `rijec${data.ajdirijeci}`);
+            document.getElementById('rijec').value = '';
+        });
+    }
+</script>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark bg-primary fixed-top navi">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand slido" href="#">
+            <img src="../images/favicon.ico" alt="Moja slika" style="width:40px;" class="rounded-circle">
+        </a>
+        <div class="collapse navbar-collapse centriranje" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="/" class="nav-link dijelovi">Početna</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/administrator/predavanja" class="nav-link active dijelovi">Sva predavanja</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/administrator/pitanja" class="nav-link dijelovi">Sva pitanja</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/administrator/zabranjenerijeci" class="nav-link dijelovi">Zabranjene rijeci</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <form action="logout" method="POST">
+                <button type="submit" class="btn btn-outline-secondary text-light">Sign out</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col centriranje">
+            <div>
+                <input type="text" id="rijec" class="form-control" placeholder="Unesite rijec..">
+            </div>
+            <div class="p-1">
+                <button onclick="dodaj()" type="button" class="btn btn-primary">Unesi</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+    <table class="table" id="tabela">
+        <thead>
+        <tr>
+            <th scope="col">Tekst</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <%for(let i=0;i<rijeci.length;i++){%>
+        <tr id="rijec<%=rijeci[i].id%>">
+            <td><%=rijeci[i].tekst%></td>
+            <td>
+                <button class="btn btn-danger" type="button" onclick="obrisi(<%= rijeci[i].id %>)">Brisi</button>
+            </td>
+        </tr>
+        <%}%>
+        </tbody>
+    </table>
+    </div>
+</div>
+</body>
+</html>
